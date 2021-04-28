@@ -32,6 +32,7 @@ router.post('/auth', (req,res) => {
     if (!email || !password)
         return res.send({ error: 'Dados inválidos! '});
     // se foram informados
+    // verificando se existe o e-mail
     Users.findOne({ email }, (err, data) => {
         if (err)
             return res.send({ error: 'Erro ao buscar usuário!' });
@@ -66,7 +67,6 @@ router.get('/', auth, async (req,res) => {
 // criando o endpoint para salvar usuário
 router.post('/create', auth, async (req,res) => {
     const { name, username, phone, email, password } = req.body;
-    console.log(`${name} - ${username} - ${phone} - ${email} - ${password}`);
     // testando se todos os campos obrigatórios foram informados
     if (!name || !username || !email || !password) 
         return res.send({ error: 'Verifique se todos os campos obrigatórios foram informados! '});
@@ -100,7 +100,7 @@ router.put('/update/:id', auth, async (req,res) => {
         const userChanged = await Users.findById(req.params.id);
         // impedindo o retorno da senha
         userChanged.password = undefined;
-        return res.status(201).send({ userChanged, token: createUserToken(userChanged.id) });
+        return res.status(201).send({ userChanged });
     }
     catch (err) {
         return res.send({ error: `Erro ao atualizar o usuário: ${err}`})

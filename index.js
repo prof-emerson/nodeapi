@@ -4,12 +4,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 // importando/instanciando a biblioteca 'body-parser'
 const bodyParser = require('body-parser');
+// importando a biblioteca de configurações
+const config = require('./config/config');
 
 // instanciando/criando o aplicativo da API para ser uma nova instância da classe 'express'
 const app = express();
-
-// criando a string de conexão com o MongoDB Atlas
-const url = 'mongodb+srv://emerson:mongodbdam21@cluster0.pfru1.mongodb.net/deliverydb?retryWrites=true&w=majority'
 
 // criando a constante com opções de conexão
 const options = {
@@ -21,7 +20,7 @@ const options = {
 };
 
 // conectando ao banco de dados
-mongoose.connect(url,options);
+mongoose.connect(config.dbString,options);
 
 // ocultando algumas mensagens do console
 mongoose.set('useCreateIndex',true);
@@ -46,11 +45,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // importando os arquivos de rotas
-const publicRoutes = require('./routes/public');
 const userRoutes = require('./routes/users');
 
 // associando as duas instâncias de rotas ao app
-app.use('/', publicRoutes);
 app.use('/users', userRoutes);
 
 // configurando a porta em que a API ficará ouvindo
